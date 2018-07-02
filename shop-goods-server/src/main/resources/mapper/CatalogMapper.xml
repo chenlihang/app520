@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.wolfcode.shop.mapper.CatalogMapper" >
+  <resultMap id="BaseResultMap" type="cn.wolfcode.shop.domain.Catalog" >
+    <id column="id" property="id" />
+    <result column="name" property="name" />
+    <result column="code" property="code" />
+    <result column="sort" property="sort" />
+    <result column="p_id" property="pId" />
+    <result column="is_parent" property="isParent" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from catalog
+    where id = #{id}
+  </delete>
+  <insert id="insert" parameterType="cn.wolfcode.shop.domain.Catalog" useGeneratedKeys="true" keyProperty="id" >
+    insert into catalog (name, code, sort, p_id, is_parent)
+    values (#{name}, #{code}, #{sort}, #{pId}, #{isParent})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.wolfcode.shop.domain.Catalog" >
+    update catalog
+    set name = #{name},
+      code = #{code},
+      sort = #{sort},
+      p_id = #{pId},
+      is_parent = #{isParent}
+    where id = #{id}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, name, code, sort, p_id, is_parent
+    from catalog
+    where id = #{id}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, name, code, sort, p_id, is_parent
+    from catalog order by sort asc
+  </select>
+
+  <select id="getChildCatalog" resultMap="BaseResultMap">
+    select * from catalog where p_id = #{catalogId} order by sort asc
+  </select>
+
+  <select id="countProduct" resultType="int">
+    select COUNT(id) from product where catalog_id = #{catalogId}
+  </select>
+
+  <select id="countProperty" resultType="int">
+    select COUNT(id) from property where catalog_id = #{catalogId}
+  </select>
+  <select id="getParentCatalogList" resultMap="BaseResultMap">
+    select * from catalog where find_in_set(id,getParentCatalog(#{catalogId}))
+  </select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
